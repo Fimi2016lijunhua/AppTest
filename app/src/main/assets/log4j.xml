@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jakarta.apache.org/log4j/ ">
+
+    <!-- RollingFileAppender 回滚文件 -->
+    <!-- Append true，默认每次启动系统，日志继续输出到原来的文件，而不是清空了再来 -->
+    <!-- MaxFileSize 后缀可以是KB, MB 或者是 GB. 在日志文件到达该大小时，将会自动滚动，即将原来的内容移到mylog.log.1文件 -->
+    <!-- MaxBackupIndex 最多20个 -->
+    <!-- PatternLayout 控制日志输出的格式化，参考上面的那些符合说明，自己怼自己想要的格式。 -->
+    <!-- filter 级别范围过滤器 -->
+    <!-- levelMin levelMax 范围 -->
+    <appender name="FimiLogger" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="/MiDrone/log.txt" />
+        <param name="Append" value="true" />
+        <param name="MaxFileSize" value="10MB" />
+        <param name="MaxBackupIndex" value="20" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%m%n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="levelMin" value="INFO" />
+            <param name="levelMax" value="INFO" />
+            <param name="AcceptOnMatch" value="true" />
+        </filter>
+    </appender>
+
+
+
+    <!-- 输出到日志文件  -->
+    <appender name="filelog"
+        class="org.apache.log4j.RollingFileAppender">
+        <!-- 设置File参数：日志输出文件名 -->
+        <param name="File" value="/MiDrone/ljh_log.txt" />
+        <!-- 设置是否在重新启动服务时，在原有日志的基础添加新日志 -->
+        <param name="Append" value="true" />
+        <!-- 设置文件大小 -->
+        <param name="MaxFileSize" value="1MB" />
+        <!-- 设置文件备份 -->
+        <param name="MaxBackupIndex" value="10000" />
+        <!-- 设置输出文件项目和格式 -->
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p (%c:%L)- %m%n" />
+        </layout>
+    </appender>
+
+
+    <!-- 这个就是自定义的一个logger -->
+    <!-- 输出级别是info级别及以上的日志，不要怕，StreamOperateFile已经过滤，只输出info级别的日志 -->
+    <!-- additivity 这个默认是true，即继承父类 root logger -->
+    <!-- 也就是说，你的这个日志也会在root的logger里面输出的，我这里配置false，就是不继承，各走各的。 -->
+    <!-- appender-ref 也就是说这个logger的输出目的地是哪里，ref就是关联到上面声明的一个file，一个console -->
+    <logger name="FimiLogger" additivity="false">
+        <level value="info" />
+        <appender-ref ref="console" />
+        <appender-ref ref="input-file"/>
+    </logger>
+
+    <!-- 传说中的根logger -->
+    <!-- 输出级别是info级别及以上的日志，下面的ref关联的两个appender没有filter设置，所以，info及以上的日志都是会输出到这2个appender的 -->
+    <root>
+        <priority value="info" />
+        <appender-ref ref="console" />
+        <appender-ref ref="input-file" />
+    </root>
+
+</log4j:configuration>
